@@ -3,7 +3,7 @@
     <label for="dpsCap">DPS Cap Exponent (max DPS): </label>
     <input v-model.number="dpsCap" type="number" id="dpsCap"><br />
     <label for="totalIdols">Total Idols ({{ totalIdols | asSci }}): </label>
-    <input v-model.number="totalIdols" type="number"> <br />
+    <input v-model.number.lazy="totalIdols" type="number"> <br />
     <label for="sprintCap">Sprint Cap: </label>
     <input
       v-model.number="sprintCap"
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+/* global BigInt */
 export default {
   name: 'DungeonInputs',
   computed: {
@@ -41,7 +42,7 @@ export default {
         return this.$store.getters.getCurrent('TotalIdols')
       },
       set: function (update) {
-        this.$store.commit('updateCurrent',{key: 'TotalIdols', value: update})
+        this.$store.commit('updateCurrent',{key: 'TotalIdols', value: BigInt(update).toString()})
       }
     },
     sprintCap: {
@@ -63,7 +64,7 @@ export default {
   }
 }
 </script>
-
+igin
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h3 {

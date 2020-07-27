@@ -1,3 +1,4 @@
+/* global BigInt */
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate';
@@ -7,7 +8,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   plugins: [
     createPersistedState({
-      paths: ['current', 'BITable']
+      paths: ['current']
     })
   ],
   state: {
@@ -41,10 +42,12 @@ export default new Vuex.Store({
       ).pop()
     },
     BIatAvgDrop: (state) => (biDrop) => {
-      let t2sEffect = biDrop * (1 + ((state.current.t2s -1) * 0.25))
-      return state.BITable.find(
-        bi => bi.TotalBIAvg > t2sEffect
-      )
+      let BigBIDrop = BigInt(Math.floor(biDrop)),
+          t2sEffect = BigBIDrop * BigInt(1 + ((state.current.t2s -1) * 25 / 100)),
+          newCap = state.BITable.find(
+            bi => bi.TotalBIAvg > t2sEffect
+          )
+      return newCap != undefined ? newCap : "Cannot match with current DPS Cap"
     },
     getCurrent: (state) => (current) => {
       return state.current[current]
@@ -56,11 +59,11 @@ export default new Vuex.Store({
   mutations: {
     setupBITable (state) {
       let table = [],
-          r = 0;
+          r = 0n;
       for (var level=100; level <= state.constants.fpMax; level = level + 5) {
         let biLevel = level - 95,
             cap = level / (state.constants.fpMax / state.constants.dpsCap),
-            biGain = 10 * Math.pow(1.01,0.4 * biLevel),
+            biGain = BigInt(Math.floor(10 * Math.pow(1.01,0.4 * biLevel))),
             running = r + biGain
         r = running
         table.push({
@@ -68,7 +71,7 @@ export default new Vuex.Store({
           DPSCap: cap,
           BIGain: biGain,
           TotalBIMax: running,
-          TotalBIAvg: running *0.4
+          TotalBIAvg: running * 4n / 10n
         })
       }
       state.BITable = table

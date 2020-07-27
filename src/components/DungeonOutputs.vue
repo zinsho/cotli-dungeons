@@ -28,6 +28,7 @@
 </template>
 
 <script>
+/* global BigInt */
 import { mapState } from 'vuex'
 
 export default {
@@ -60,12 +61,14 @@ export default {
     },
     avgBI: function () {
       if (this.current.t2s === 0) { return "Bonus Idols not unlocked" }
-      return this.$store.getters.BIatLevelCap(this.levelCap)
-        .TotalBIAvg * this.constants.postAdBonus * (1 + ((this.current.t2s -1) * 0.2))
+      let TotalAvg = this.$store.getters.BIatLevelCap(this.levelCap).TotalBIAvg,
+          WithPostAd = TotalAvg * BigInt(this.constants.postAdBonus * 100) / 100n,
+          WithT2s = WithPostAd * BigInt(1+((this.current.t2s -1) * 0.25))
+      return WithT2s
     },
     sprintBIIncrease: function () {
       if (this.current.t2s === 0) { return "Bonus Idols not unlocked" }
-      return (this.avgBI * (this.sprintIncrease))
+      return (this.avgBI * BigInt(Math.floor(this.sprintIncrease * 100)) / 100n)
     },
     sprintDungeonPct: function () {
       return this.$store.getters.dungeonPct(this.current.SprintCap)
@@ -85,7 +88,7 @@ export default {
     },
     matchFP: function () {
       if (this.current.t2s === 0) { return "Bonus Idols not unlocked" }
-      return this.sprintBIIncrease / this.sprintDungeonPct
+      return this.sprintBIIncrease / BigInt(Math.floor(this.sprintDungeonPct * 10000)) / 10000n
     },
     matchDungeon: function () {
       if (this.current.t2s === 0) { return "Bonus Idols not unlocked" }
@@ -97,6 +100,10 @@ export default {
         return "Impossible"
       } else {
         let newCap = this.$store.getters.BIatAvgDrop(this.matchDungeon).DPSCap
+        console.log(newCap)
+        if (newCap == undefined) {
+          return "Current DPS cap of "+this.constants.dpsCap+" cannot match Dungeons"
+        }
         return newCap - (newCap % 10) + 10
       }
     },

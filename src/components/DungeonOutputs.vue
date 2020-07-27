@@ -18,12 +18,12 @@
   <label for="detailed">Show all comparisons</label>
   <input type="checkbox" id="detailed" v-model="showDetailed">
   <p v-if="showDetailed || sprintDungeonIdolGain < sprintBIIncrease" >Total Idols for dungeon to match FP Bonus: {{ matchFP | asSci }}</p>
-  <!-- <div -->
-  <!--   v-if="current.t2s != 0 && (showDetailed || sprintDungeonIdolGain > sprintBIIncrease)" -->
-  <!--   > -->
+  <div
+    v-if="current.t2s != 0 && (showDetailed || sprintDungeonIdolGain > sprintBIIncrease)"
+    >
     <p>Average BI to match Dungeon Sprint: {{ matchDungeon | asSci }}</p>
     <p>DPS Cap to match Dungeon Sprint: {{ newDPSCap }}</p>
-  <!-- </div> -->
+  </div>
   </div>
 </template>
 
@@ -88,7 +88,7 @@ export default {
     },
     matchFP: function () {
       if (this.current.t2s === 0) { return "Bonus Idols not unlocked" }
-      return this.sprintBIIncrease / BigInt(Math.floor(this.sprintDungeonPct * 10000)) / 10000n
+      return this.sprintBIIncrease / BigInt(Math.floor(this.sprintDungeonPct * 10000)) * 10000n
     },
     matchDungeon: function () {
       if (this.current.t2s === 0) { return "Bonus Idols not unlocked" }

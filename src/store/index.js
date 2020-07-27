@@ -43,10 +43,12 @@ export default new Vuex.Store({
     },
     BIatAvgDrop: (state) => (biDrop) => {
       let BigBIDrop = BigInt(Math.floor(biDrop)),
-          t2sEffect = BigBIDrop * BigInt(1 + ((state.current.t2s -1) * 25 / 100)),
+          t2s = BigInt(100 + (( state.current.t2s - 1) * 25)),
+          t2sEffect = BigBIDrop / t2s * 100n,
           newCap = state.BITable.find(
             bi => bi.TotalBIAvg > t2sEffect
           )
+      console.log(BigBIDrop,t2sEffect,newCap)
       return newCap != undefined ? newCap : "Cannot match with current DPS Cap"
     },
     getCurrent: (state) => (current) => {

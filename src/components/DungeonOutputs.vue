@@ -81,7 +81,7 @@ export default {
       return Math.floor(this.current.dpsCap * this.capGrowth)
     },
     deepDungeonPct: function () {
-      return this.$store.getters.dungeonPct(this.levelCap)
+      return this.$store.getters.dungeonPct(Math.floor(this.current.dpsCap * this.capGrowth))
     },
     deepDungeonIdolGain: function () {
       return this.current.TotalIdols * this.deepDungeonPct
@@ -100,7 +100,6 @@ export default {
         return "Impossible"
       } else {
         let newCap = this.$store.getters.BIatAvgDrop(this.matchDungeon).DPSCap
-        console.log(newCap)
         if (newCap == undefined) {
           return "Current DPS cap of "+this.constants.dpsCap+" cannot match Dungeons"
         }

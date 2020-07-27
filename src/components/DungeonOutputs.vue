@@ -81,7 +81,7 @@ export default {
       return Math.floor(this.current.dpsCap * this.capGrowth)
     },
     deepDungeonPct: function () {
-      return this.$store.getters.dungeonPct(Math.floor(this.current.dpsCap * this.capGrowth))
+      return Math.min(0.03, this.$store.getters.dungeonPct(Math.floor(this.current.dpsCap * this.capGrowth)))
     },
     deepDungeonIdolGain: function () {
       return this.current.TotalIdols * this.deepDungeonPct
